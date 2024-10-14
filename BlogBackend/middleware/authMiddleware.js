@@ -16,7 +16,7 @@ exports.signup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 12);
     const user = await User.create({ name, email, password: hashedPassword, role: 'public' });
 
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id, role: user.role }, "Node", { expiresIn: '1h' });
 
     res.status(201).json({
       message: 'User registered successfully',
@@ -43,7 +43,7 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id, role: user.role }, Node, { expiresIn: '1h' });
 
     res.status(200).json({
       message: 'Login successful',
@@ -67,7 +67,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
       token = req.headers.authorization.split(' ')[1];
 
       // Decode the token to get the user id
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, "Node");
 
       // Fetch the user from the database and attach it to the request object
       req.user = await User.findById(decoded.id).select('-password');

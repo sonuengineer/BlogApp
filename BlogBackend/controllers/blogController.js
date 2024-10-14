@@ -75,20 +75,26 @@ exports.updateBlog = async (req, res) => {
 // @desc    Delete a blog
 // @route   DELETE /api/blogs/:id
 // @access  Admin (Protected)
+// In your blogController.js
+
+
+// @desc   Delete a blog post
+// @route  DELETE /api/blogs/:id
+// @access Private/Admin
 exports.deleteBlog = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const blog = await Blog.findById(req.params.id);
+    const blog = await Blog.findById(id);
+
     if (!blog) {
       return res.status(404).json({ message: 'Blog not found' });
-    }
-
-    if (blog.author.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: 'Not authorized' });
     }
 
     await blog.remove();
     res.status(200).json({ message: 'Blog deleted successfully' });
   } catch (error) {
+    console.error('Error deleting blog:', error);
     res.status(500).json({ message: 'Failed to delete blog', error });
   }
 };
